@@ -74,6 +74,6 @@
 
 * Access the service 
 	
-	http://localhost:8080/rate
+	http://localhost:8888/rate
 	
 Observe that values are pulled from **config-server** 
