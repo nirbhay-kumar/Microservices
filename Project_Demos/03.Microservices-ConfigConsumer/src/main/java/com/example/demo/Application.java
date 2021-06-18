@@ -13,4 +13,4 @@ public class Application {
 }
 
 
-//http://localhost:8080/rate
+//http://localhost:8888/rate
