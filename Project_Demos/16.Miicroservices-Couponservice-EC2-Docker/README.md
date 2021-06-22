@@ -61,14 +61,12 @@
 		mysql         latest    c0cdc95609f1   5 weeks ago         556MB
 		java          8         d23bdf5b1b1b   4 years ago         643MB
 
+#### Command to link container:
+		docker run -t --name=coupon_app --link docker-mysql:mysql -p 10555:9091 coupon_app
+		docker run -t --link docker-mysql:mysql -p 10666:9090 product_app
+		docker run -t --link docker-mysql:mysql --link coupon-app:coupon_app -p 10666:9090 product_app
 
 
-docker run -t --name=coupon_app --link docker-mysql:mysql -p 10555:9091 coupon_app
-
-docker run -t --link docker-mysql:mysql -p 10666:9090 product_app
-
-docker run -t --link docker-mysql:mysql --link coupon-app:coupon_app -p 10666:9090 product_app
-
-
-curl -d '{"code":"POWERSALE","discount":"100","expDate":"10/10/2022"}' -H "Content-Type: application/json" -X POST http://18.118.169.12:10555/couponapi/coupons
-curl -d '{"name":"MAC","description":"Its Cool","price":2000,"couponCode":"SUPERSALE"}' -H "Content-Type: application/json" -X POST http://18.118.169.12:10666/productapi/products
+		curl -d '{"code":"SUPERSALE","discount":"100","expDate":"10/10/2022"}' -H "Content-Type: application/json" -X POST http://18.118.169.12:10555/couponapi/coupons
+		curl -H "Content-Type: application/json" -X GET http://18.118.169.12:10555/couponapi/coupons/SUPERSALE
+		curl -d '{"name":"MAC","description":"Its Cool","price":2000,"couponCode":"SUPERSALE"}' -H "Content-Type: application/json" -X POST http://18.118.169.12:10666/productapi/products
