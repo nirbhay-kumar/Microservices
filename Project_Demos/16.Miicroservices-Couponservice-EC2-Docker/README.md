@@ -14,6 +14,13 @@
 
 		scp -i C:/Users/nirbkuma/Downloads/DockerKeyPair.pem C:/Users/nirbkuma/GIT/Microservices/Project_Demos/17.Miicroservices-Productservice-EC2-Docker/target/productservice-1.0.jar ec2-user@18.118.169.12:/home/ec2-user
 
+#### Install Docker:	
+		sudo yum install docker -y
+		service docker start
+		docker --version
+		docker run hello-world
+		docker images
+
 ##### Dockerfile - couponservice
 		FROM java:8
 		ADD couponservice-1.0.jar  couponservice.jar
@@ -63,9 +70,13 @@
 
 #### Command to link container:
 		docker run -t --name=coupon_app --link docker-mysql:mysql -p 10555:9091 coupon_app
-		docker run -t --link docker-mysql:mysql -p 10666:9090 product_app
-		docker run -t --link docker-mysql:mysql --link coupon-app:coupon_app -p 10666:9090 product_app
-
+		docker run -t --link docker-mysql:mysql --link coupon_app:coupon-app -p 10666:9090 product_app
+		
+		[root@ip-172-31-35-229 ec2-user]# docker ps
+		CONTAINER ID   IMAGE         COMMAND                  CREATED              STATUS              PORTS                               NAMES
+		b44ac7d5dff3   product_app   "java -jar productse…"   About a minute ago   Up About a minute   0.0.0.0:10666->9090/tcp             product_app
+		c0f6e01a80a9   coupon_app    "java -jar couponser…"   About a minute ago   Up About a minute   0.0.0.0:10555->9091/tcp             coupon_app
+		a7a4b959a7c1   mysql         "docker-entrypoint.s…"   2 minutes ago        Up 2 minutes        33060/tcp, 0.0.0.0:6666->3306/tcp   docker-mysql
 
 		curl -d '{"code":"SUPERSALE","discount":"100","expDate":"10/10/2022"}' -H "Content-Type: application/json" -X POST http://18.118.169.12:10555/couponapi/coupons
 		curl -H "Content-Type: application/json" -X GET http://18.118.169.12:10555/couponapi/coupons/SUPERSALE
