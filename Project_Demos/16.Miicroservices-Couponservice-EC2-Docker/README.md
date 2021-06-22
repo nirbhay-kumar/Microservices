@@ -14,6 +14,13 @@
 
 		scp -i C:/Users/nirbkuma/Downloads/DockerKeyPair.pem C:/Users/nirbkuma/GIT/Microservices/Project_Demos/17.Miicroservices-Productservice-EC2-Docker/target/productservice-1.0.jar ec2-user@18.118.169.12:/home/ec2-user
 
+#### Install Docker:	
+		sudo yum install docker -y
+		service docker start
+		docker --version
+		docker run hello-world
+		docker images
+
 ##### Dockerfile - couponservice
 		FROM java:8
 		ADD couponservice-1.0.jar  couponservice.jar
@@ -63,7 +70,7 @@
 
 #### Command to link container:
 		docker run -t --name=coupon_app --link docker-mysql:mysql -p 10555:9091 coupon_app
-		docker run -t --link docker-mysql:mysql -p 10666:9090 product_app
+		docker run -t --name=product_app --link docker-mysql:mysql -p 10666:9090 product_app
 		docker run -t --link docker-mysql:mysql --link coupon-app:coupon_app -p 10666:9090 product_app
 
 
