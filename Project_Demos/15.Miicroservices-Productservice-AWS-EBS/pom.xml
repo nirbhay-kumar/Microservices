@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.crescent</groupId>
-	<artifactId>15.Miicroservices-Productservice-AWS-EBS</artifactId>
+	<artifactId>productservice</artifactId>
 	<version>0.0.1</version>
-	<name>productservice</name>
-	<description>product service</description>
+	<name>15.Miicroservices-Productservice-AWS-EBS</name>
+	<description>15.Miicroservices-Productservice-AWS-EBS</description>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
