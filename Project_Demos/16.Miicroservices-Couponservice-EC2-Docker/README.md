@@ -70,8 +70,7 @@
 
 #### Command to link container:
 		docker run -t --name=coupon_app --link docker-mysql:mysql -p 10555:9091 coupon_app
-		docker run -t --name=product_app --link docker-mysql:mysql -p 10666:9090 product_app
-		docker run -t --link docker-mysql:mysql --link coupon-app:coupon_app -p 10666:9090 product_app
+		docker run -t --link docker-mysql:mysql --link coupon_app:coupon-app -p 10666:9090 product_app
 		
 		[root@ip-172-31-35-229 ec2-user]# docker ps
 		CONTAINER ID   IMAGE         COMMAND                  CREATED              STATUS              PORTS                               NAMES
