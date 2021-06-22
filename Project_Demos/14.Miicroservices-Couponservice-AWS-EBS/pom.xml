@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.crescent</groupId>
-	<artifactId>couponservice</artifactId>
+	<artifactId>14.Miicroservices-Couponservice-AWS-EBS</artifactId>
 	<version>0.0.1</version>
 	<name>couponservice</name>
 	<description>coupon service</description>

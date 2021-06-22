@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.crescent</groupId>
-	<artifactId>productservice</artifactId>
+	<artifactId>15.Miicroservices-Productservice-AWS-EBS</artifactId>
 	<version>0.0.1</version>
 	<name>productservice</name>
 	<description>product service</description>
