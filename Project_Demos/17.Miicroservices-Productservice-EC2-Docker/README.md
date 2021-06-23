@@ -43,7 +43,7 @@ docker run hello-world
 docker images
 ```
 #### Dockerfile - couponservice
-```vi
+```.sh
 FROM java:8
 ADD couponservice-1.0.jar  couponservice.jar
 ENTRYPOINT ["java","-jar","couponservice.jar"]
