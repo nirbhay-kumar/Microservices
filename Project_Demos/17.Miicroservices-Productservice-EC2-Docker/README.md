@@ -1,6 +1,6 @@
 application.properties - Couponservices:
 ========================================
-```java
+```java properties
 spring.datasource.url=jdbc:mysql://docker-mysql:3306/mydb
 spring.datasource.username=root
 spring.datasource.password=password
