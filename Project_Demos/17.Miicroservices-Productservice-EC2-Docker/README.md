@@ -35,7 +35,7 @@ scp -i C:/Users/nirbkuma/Downloads/DockerKeyPair.pem C:/Users/nirbkuma/GIT/Micro
 scp -i C:/Users/nirbkuma/Downloads/DockerKeyPair.pem C:/Users/nirbkuma/GIT/Microservices/Project_Demos/17.Miicroservices-Productservice-EC2-Docker/target/productservice-1.0.jar ec2-user@18.118.169.12:/home/ec2-user
 ```
 #### Install Docker:
-```programming
+```command
 sudo yum install docker -y
 service docker start
 docker --version
@@ -43,7 +43,7 @@ docker run hello-world
 docker images
 ```
 #### Dockerfile - couponservice
-```.sh
+```Dockerfile
 FROM java:8
 ADD couponservice-1.0.jar  couponservice.jar
 ENTRYPOINT ["java","-jar","couponservice.jar"]
