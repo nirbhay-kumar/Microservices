@@ -10,7 +10,7 @@ server.port= 9091
 
 application.properties - Productservices:
 =========================================
-```java
+```shell-script
 spring.datasource.url=jdbc:mysql://docker-mysql:3306/mydb
 spring.datasource.username=root
 spring.datasource.password=password
