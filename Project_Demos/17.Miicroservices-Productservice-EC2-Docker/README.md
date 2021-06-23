@@ -1,5 +1,4 @@
-application.properties - Couponservices:
-========================================
+#### application.properties - Couponservices:
 ```properties
 spring.datasource.url=jdbc:mysql://docker-mysql:3306/mydb
 spring.datasource.username=root
@@ -8,9 +7,8 @@ spring.jpa.hibernate.ddl-auto=update
 server.port= 9091
 ```
 
-application.properties - Productservices:
-=========================================
-```shell-script
+#### application.properties - Productservices:
+```properties
 spring.datasource.url=jdbc:mysql://docker-mysql:3306/mydb
 spring.datasource.username=root
 spring.datasource.password=password
