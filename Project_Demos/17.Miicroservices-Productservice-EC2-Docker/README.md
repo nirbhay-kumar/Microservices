@@ -48,9 +48,9 @@ FROM java:8
 ADD couponservice-1.0.jar  couponservice.jar
 ENTRYPOINT ["java","-jar","couponservice.jar"]
 ```
-$docker build -f Dockerfile -t coupon_app .
+`$docker build -f Dockerfile -t coupon_app .`
 
-Dockerfile - productservice
+#### Dockerfile - productservice
 ===========================
 FROM java:8
 ADD productservice-1.0.jar  productservice.jar
