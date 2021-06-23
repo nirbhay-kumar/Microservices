@@ -66,7 +66,8 @@ $docker exec -it docker-mysql bash
 
 #mysql -uroot -p
 password
-
+```
+```sql
 mysql> show databases;
 mysql> use mydb;
 mysql> show tables;
@@ -84,7 +85,7 @@ code varchar(20) UNIQUE,
 discount decimal(8,3),
 exp_date varchar(100) 
 );
-
+```
 [root@ip-172-31-35-229 ec2-user]# docker images
 REPOSITORY    TAG       IMAGE ID       CREATED             SIZE
 product_app   latest    2228cfff1f4e   About an hour ago   684MB
