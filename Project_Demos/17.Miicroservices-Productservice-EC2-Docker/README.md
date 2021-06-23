@@ -20,7 +20,7 @@ couponService.url = http://coupon-app:9091/couponapi/coupons/
 ```
 Connect to SSH:
 ===============
-```linux
+```ssh
 ssh -i "C:/Users/nirbkuma/Downloads/DockerKeyPair.pem" ec2-user@ec2-18-118-169-12.us-east-2.compute.amazonaws.com
 
 sudo su
