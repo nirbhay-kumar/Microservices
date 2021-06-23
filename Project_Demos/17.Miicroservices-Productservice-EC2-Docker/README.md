@@ -42,12 +42,12 @@ docker --version
 docker run hello-world
 docker images
 ```
-Dockerfile - couponservice
-==========================
+#### Dockerfile - couponservice
+```vi
 FROM java:8
 ADD couponservice-1.0.jar  couponservice.jar
 ENTRYPOINT ["java","-jar","couponservice.jar"]
-
+```
 $docker build -f Dockerfile -t coupon_app .
 
 Dockerfile - productservice
