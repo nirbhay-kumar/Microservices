@@ -16,8 +16,7 @@ spring.jpa.hibernate.ddl-auto=update
 server.port=9090
 couponService.url = http://coupon-app:9091/couponapi/coupons/
 ```
-Connect to SSH:
-===============
+#### Connect to SSH:
 ```command
 ssh -i "C:/Users/nirbkuma/Downloads/DockerKeyPair.pem" ec2-user@ec2-18-118-169-12.us-east-2.compute.amazonaws.com
 
@@ -29,21 +28,20 @@ chown ec2-user:ec2-user /home/ec2-user -R
 chmod 700 /home/ec2-user /home/ec2-user/.ssh
 chmod 600 /home/ec2-user/.ssh/authorized_keys
 ```
-Copy couponservice and productservice jar:
-==========================================
+#### Copy couponservice and productservice jar:
 ```command
 scp -i C:/Users/nirbkuma/Downloads/DockerKeyPair.pem C:/Users/nirbkuma/GIT/Microservices/Project_Demos/16.Miicroservices-Couponservice-EC2-Docker/target/couponservice-1.0.jar ec2-user@18.118.169.12:/home/ec2-user
 
 scp -i C:/Users/nirbkuma/Downloads/DockerKeyPair.pem C:/Users/nirbkuma/GIT/Microservices/Project_Demos/17.Miicroservices-Productservice-EC2-Docker/target/productservice-1.0.jar ec2-user@18.118.169.12:/home/ec2-user
 ```
-Install Docker:
-===============
+#### Install Docker:
+```programming
 sudo yum install docker -y
 service docker start
 docker --version
 docker run hello-world
 docker images
-
+```
 Dockerfile - couponservice
 ==========================
 FROM java:8
