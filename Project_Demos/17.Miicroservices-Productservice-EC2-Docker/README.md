@@ -10,15 +10,17 @@ server.port= 9091
 
 application.properties - Productservices
 ========================================
+```java
 spring.datasource.url=jdbc:mysql://docker-mysql:3306/mydb
 spring.datasource.username=root
 spring.datasource.password=password
 spring.jpa.hibernate.ddl-auto=update
 server.port=9090
 couponService.url = http://coupon-app:9091/couponapi/coupons/
-
+```
 Connect to SSH:
 ===============
+```linux
 ssh -i "C:/Users/nirbkuma/Downloads/DockerKeyPair.pem" ec2-user@ec2-18-118-169-12.us-east-2.compute.amazonaws.com
 
 sudo su
@@ -28,7 +30,7 @@ chmod 755 /home
 chown ec2-user:ec2-user /home/ec2-user -R
 chmod 700 /home/ec2-user /home/ec2-user/.ssh
 chmod 600 /home/ec2-user/.ssh/authorized_keys
-
+```
 Copy couponservice and productservice jar:
 ==========================================
 scp -i C:/Users/nirbkuma/Downloads/DockerKeyPair.pem C:/Users/nirbkuma/GIT/Microservices/Project_Demos/16.Miicroservices-Couponservice-EC2-Docker/target/couponservice-1.0.jar ec2-user@18.118.169.12:/home/ec2-user
