@@ -51,15 +51,15 @@ ENTRYPOINT ["java","-jar","couponservice.jar"]
 `$docker build -f Dockerfile -t coupon_app .`
 
 #### Dockerfile - productservice
-===========================
+```Dockerfile
 FROM java:8
 ADD productservice-1.0.jar  productservice.jar
 ENTRYPOINT ["java","-jar","productservice.jar"]
+```
+`$docker build -f Dockerfile -t product_app .`
 
-$docker build -f Dockerfile -t product_app .
-
-Start MySQL container:
-======================
+#### Start MySQL container:
+```ssh command
 $docker run -d -p 6666:3306 --name=docker-mysql --env="MYSQL_ROOT_PASSWORD=password" --env="MYSQL_DATABASE=mydb" mysql
 
 $docker exec -it docker-mysql bash
