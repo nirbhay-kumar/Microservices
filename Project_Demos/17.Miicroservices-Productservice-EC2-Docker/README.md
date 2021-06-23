@@ -1,5 +1,5 @@
-application.properties - Couponservices
-=======================================
+application.properties - Couponservices:
+========================================
 ```java
 spring.datasource.url=jdbc:mysql://docker-mysql:3306/mydb
 spring.datasource.username=root
@@ -8,8 +8,8 @@ spring.jpa.hibernate.ddl-auto=update
 server.port= 9091
 ```
 
-application.properties - Productservices
-========================================
+application.properties - Productservices:
+=========================================
 ```java
 spring.datasource.url=jdbc:mysql://docker-mysql:3306/mydb
 spring.datasource.username=root
@@ -33,10 +33,11 @@ chmod 600 /home/ec2-user/.ssh/authorized_keys
 ```
 Copy couponservice and productservice jar:
 ==========================================
+```Shell
 scp -i C:/Users/nirbkuma/Downloads/DockerKeyPair.pem C:/Users/nirbkuma/GIT/Microservices/Project_Demos/16.Miicroservices-Couponservice-EC2-Docker/target/couponservice-1.0.jar ec2-user@18.118.169.12:/home/ec2-user
 
 scp -i C:/Users/nirbkuma/Downloads/DockerKeyPair.pem C:/Users/nirbkuma/GIT/Microservices/Project_Demos/17.Miicroservices-Productservice-EC2-Docker/target/productservice-1.0.jar ec2-user@18.118.169.12:/home/ec2-user
-
+```
 Install Docker:
 ===============
 sudo yum install docker -y
