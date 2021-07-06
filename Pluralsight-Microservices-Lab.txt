@@ -1,0 +1,16 @@
+
+https://app.pluralsight.com/labs
+Configure Amazon SQS as an Event Source for Lambda Functions
+Create an Amazon EKS Cluster
+Create and Use an Amazon SQS Queue
+Create and Utilize a Customer Managed Key in AWS KMS
+Add a Test Stage to a Deployment Pipeline on AWS
+Automate CI/CD with AWS Code Pipeline
+Automate Continuous Delivery of Infrastructure with AWS CloudFormation
+Build an Amazon EC2 Auto Scaling Group with Load Balancing
+Configure an Application Load Balancer on Amazon EC2
+Configure Security Groups on AWS EC2 Instances
+Create an Auto-scaling Group for a Web Server Using a Launch Template in AWS
+Create SQS First in First Out (FIFO) Queue Using the AWS Management Console
+Display Real-time Analytics with Kinesis Firehose and Amazon Elasticsearch
+(https://app.pluralsight.com/labs/detail/cbcbc3de-c444-4e64-9917-1340a5bb436d/toc)
