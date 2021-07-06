@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.way2learnonline</groupId>
-	<artifactId>01-es-cqrs-commandapp-solution</artifactId>
+	<artifactId>cqrs-commandapp-solution</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>20.Miicroservices-CQRS-CommandApp-Solution</name>
 	<description>20.Miicroservices-CQRS-CommandApp-Solution</description>
