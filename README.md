@@ -1,3 +1,3 @@
 # Microservices
 
-###### [LAB](Pluralsight-Microservices-Lab.txt)
+###### [Pluralsight LAB](Pluralsight-Microservices-Lab.txt)
