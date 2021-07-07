@@ -1,0 +1,536 @@
++===================================+
+| Kubernetes installation on Ubuntu |
+====================================+
+
+Step 1:
+=======
+Create 3 EC2 Instance - Ubuntu. 
+i.	K8-Master
+ii.	K8-Node-1
+
+Login through CMD:
+ssh -i "C:\Users\nirbkuma\Downloads\K8KeyPair.pem" ubuntu@ec2-34-221-29-222.us-west-2.compute.amazonaws.com
+ssh -i "C:\Users\nirbkuma\Downloads\K8KeyPair.pem" ubuntu@ec2-54-190-90-107.us-west-2.compute.amazonaws.com
+
+
+Step 2:
+=======
+Run command in each instance:
+$sudo apt update
+$sudo apt install docker.io
+
+
+Step 3:
+=======
+Update the apt package index and install packages needed to use the Kubernetes apt repository:
+$sudo apt-get update
+$sudo apt-get install -y apt-transport-https ca-certificates curl
+
+Download the Google Cloud public signing key:
+$sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+Add the Kubernetes apt repository:
+$echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+Update apt package index, install kubelet, kubeadm and kubectl, and pin their version:
+$sudo apt-get update
+$sudo apt-get install -y kubelet kubeadm kubectl
+$sudo apt-mark hold kubelet kubeadm kubectl
+
+
+Step 4:
+======
+-> Using kubeadm to Create a Cluster(Master):
+root@ip-172-31-9-232:/home/ubuntu# kubeadm init --apiserver-advertise-address=172.31.9.232 --pod-network-cidr=192.168.0.0/16
+[init] Using Kubernetes version: v1.21.2
+[preflight] Running pre-flight checks
+        [WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+[preflight] Pulling images required for setting up a Kubernetes cluster
+[preflight] This might take a minute or two, depending on the speed of your internet connection
+[preflight] You can also perform this action in beforehand using 'kubeadm config images pull'
+[certs] Using certificateDir folder "/etc/kubernetes/pki"
+[certs] Generating "ca" certificate and key
+[certs] Generating "apiserver" certificate and key
+[certs] apiserver serving cert is signed for DNS names [ip-172-31-9-232 kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 172.31.9.232]
+[certs] Generating "apiserver-kubelet-client" certificate and key
+[certs] Generating "front-proxy-ca" certificate and key
+[certs] Generating "front-proxy-client" certificate and key
+[certs] Generating "etcd/ca" certificate and key
+[certs] Generating "etcd/server" certificate and key
+[certs] etcd/server serving cert is signed for DNS names [ip-172-31-9-232 localhost] and IPs [172.31.9.232 127.0.0.1 ::1]
+[certs] Generating "etcd/peer" certificate and key
+[certs] etcd/peer serving cert is signed for DNS names [ip-172-31-9-232 localhost] and IPs [172.31.9.232 127.0.0.1 ::1]
+[certs] Generating "etcd/healthcheck-client" certificate and key
+[certs] Generating "apiserver-etcd-client" certificate and key
+[certs] Generating "sa" key and public key
+[kubeconfig] Using kubeconfig folder "/etc/kubernetes"
+[kubeconfig] Writing "admin.conf" kubeconfig file
+[kubeconfig] Writing "kubelet.conf" kubeconfig file
+[kubeconfig] Writing "controller-manager.conf" kubeconfig file
+[kubeconfig] Writing "scheduler.conf" kubeconfig file
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Starting the kubelet
+[control-plane] Using manifest folder "/etc/kubernetes/manifests"
+[control-plane] Creating static Pod manifest for "kube-apiserver"
+[control-plane] Creating static Pod manifest for "kube-controller-manager"
+[control-plane] Creating static Pod manifest for "kube-scheduler"
+[etcd] Creating static Pod manifest for local etcd in "/etc/kubernetes/manifests"
+[wait-control-plane] Waiting for the kubelet to boot up the control plane as static Pods from directory "/etc/kubernetes/manifests". This can take up to 4m0s
+[apiclient] All control plane components are healthy after 12.502466 seconds
+[upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
+[kubelet] Creating a ConfigMap "kubelet-config-1.21" in namespace kube-system with the configuration for the kubelets in the cluster
+[upload-certs] Skipping phase. Please see --upload-certs
+[mark-control-plane] Marking the node ip-172-31-9-232 as control-plane by adding the labels: [node-role.kubernetes.io/master(deprecated) node-role.kubernetes.io/control-plane node.kubernetes.io/exclude-from-external-load-balancers]
+[mark-control-plane] Marking the node ip-172-31-9-232 as control-plane by adding the taints [node-role.kubernetes.io/master:NoSchedule]
+[bootstrap-token] Using token: ckbany.sh2zfyybn0p8nw8m
+[bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles
+[bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to get nodes
+[bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+[bootstrap-token] configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+[bootstrap-token] configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+[bootstrap-token] Creating the "cluster-info" ConfigMap in the "kube-public" namespace
+[kubelet-finalize] Updating "/etc/kubernetes/kubelet.conf" to point to a rotatable kubelet client certificate and key
+[addons] Applied essential addon: CoreDNS
+[addons] Applied essential addon: kube-proxy
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 172.31.9.232:6443 --token ckbany.sh2zfyybn0p8nw8m \
+        --discovery-token-ca-cert-hash sha256:ed7fe436c1eddedafda78962c7001903dad8aa05441cf9db9c5d7f05cc8d020b
+root@ip-172-31-9-232:/home/ubuntu#
+
+-> Enable kubectl command(Master):
+ubuntu@ip-172-31-9-232:~$ mkdir -p $HOME/.kube
+ubuntu@ip-172-31-9-232:~$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+ubuntu@ip-172-31-9-232:~$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+Step 5:
+=======
+Using kubeadm to Join a Cluster(Node):
+ubuntu@ip-172-31-14-191:~$ sudo su
+root@ip-172-31-14-191:/home/ubuntu# kubeadm join 172.31.9.232:6443 --token ckbany.sh2zfyybn0p8nw8m \
+>         --discovery-token-ca-cert-hash sha256:ed7fe436c1eddedafda78962c7001903dad8aa05441cf9db9c5d7f05cc8d020b
+[preflight] Running pre-flight checks
+        [WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+[preflight] Reading configuration from the cluster...
+[preflight] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Starting the kubelet
+[kubelet-start] Waiting for the kubelet to perform the TLS Bootstrap...
+
+This node has joined the cluster:
+* Certificate signing request was sent to apiserver and a response was received.
+* The Kubelet was informed of the new secure connection details.
+
+Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
+
+root@ip-172-31-14-191:/home/ubuntu#
+
+
+Step 6:
+=======
+-> Installing Addons(Weave Net Add-On)
+https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+ubuntu@ip-172-31-9-232:~$ curl -o weave.yaml https://cloud.weave.works/k8s/v1.16/net.yaml
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  7670  100  7670    0     0  21129      0 --:--:-- --:--:-- --:--:-- 21129
+ubuntu@ip-172-31-9-232:~$ cat weave.yaml
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: weave-net
+      annotations:
+        cloud.weave.works/launcher-info: |-
+          {
+            "original-request": {
+              "url": "/k8s/v1.16/net.yaml",
+              "date": "Wed Jul 07 2021 11:55:02 GMT+0000 (UTC)"
+            },
+            "email-address": "support@weave.works"
+          }
+      labels:
+        name: weave-net
+      namespace: kube-system
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      name: weave-net
+      annotations:
+        cloud.weave.works/launcher-info: |-
+          {
+            "original-request": {
+              "url": "/k8s/v1.16/net.yaml",
+              "date": "Wed Jul 07 2021 11:55:02 GMT+0000 (UTC)"
+            },
+            "email-address": "support@weave.works"
+          }
+      labels:
+        name: weave-net
+    rules:
+      - apiGroups:
+          - ''
+        resources:
+          - pods
+          - namespaces
+          - nodes
+        verbs:
+          - get
+          - list
+          - watch
+      - apiGroups:
+          - networking.k8s.io
+        resources:
+          - networkpolicies
+        verbs:
+          - get
+          - list
+          - watch
+      - apiGroups:
+          - ''
+        resources:
+          - nodes/status
+        verbs:
+          - patch
+          - update
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      name: weave-net
+      annotations:
+        cloud.weave.works/launcher-info: |-
+          {
+            "original-request": {
+              "url": "/k8s/v1.16/net.yaml",
+              "date": "Wed Jul 07 2021 11:55:02 GMT+0000 (UTC)"
+            },
+            "email-address": "support@weave.works"
+          }
+      labels:
+        name: weave-net
+    roleRef:
+      kind: ClusterRole
+      name: weave-net
+      apiGroup: rbac.authorization.k8s.io
+    subjects:
+      - kind: ServiceAccount
+        name: weave-net
+        namespace: kube-system
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: Role
+    metadata:
+      name: weave-net
+      annotations:
+        cloud.weave.works/launcher-info: |-
+          {
+            "original-request": {
+              "url": "/k8s/v1.16/net.yaml",
+              "date": "Wed Jul 07 2021 11:55:02 GMT+0000 (UTC)"
+            },
+            "email-address": "support@weave.works"
+          }
+      labels:
+        name: weave-net
+      namespace: kube-system
+    rules:
+      - apiGroups:
+          - ''
+        resourceNames:
+          - weave-net
+        resources:
+          - configmaps
+        verbs:
+          - get
+          - update
+      - apiGroups:
+          - ''
+        resources:
+          - configmaps
+        verbs:
+          - create
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: weave-net
+      annotations:
+        cloud.weave.works/launcher-info: |-
+          {
+            "original-request": {
+              "url": "/k8s/v1.16/net.yaml",
+              "date": "Wed Jul 07 2021 11:55:02 GMT+0000 (UTC)"
+            },
+            "email-address": "support@weave.works"
+          }
+      labels:
+        name: weave-net
+      namespace: kube-system
+    roleRef:
+      kind: Role
+      name: weave-net
+      apiGroup: rbac.authorization.k8s.io
+    subjects:
+      - kind: ServiceAccount
+        name: weave-net
+        namespace: kube-system
+  - apiVersion: apps/v1
+    kind: DaemonSet
+    metadata:
+      name: weave-net
+      annotations:
+        cloud.weave.works/launcher-info: |-
+          {
+            "original-request": {
+              "url": "/k8s/v1.16/net.yaml",
+              "date": "Wed Jul 07 2021 11:55:02 GMT+0000 (UTC)"
+            },
+            "email-address": "support@weave.works"
+          }
+      labels:
+        name: weave-net
+      namespace: kube-system
+    spec:
+      minReadySeconds: 5
+      selector:
+        matchLabels:
+          name: weave-net
+      template:
+        metadata:
+          labels:
+            name: weave-net
+        spec:
+          containers:
+            - name: weave
+              command:
+                - /home/weave/launch.sh
+              env:
+                - name: HOSTNAME
+                  valueFrom:
+                    fieldRef:
+                      apiVersion: v1
+                      fieldPath: spec.nodeName
+                - name: INIT_CONTAINER
+                  value: 'true'
+              image: 'docker.io/weaveworks/weave-kube:2.8.1'
+              readinessProbe:
+                httpGet:
+                  host: 127.0.0.1
+                  path: /status
+                  port: 6784
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 100Mi
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - name: weavedb
+                  mountPath: /weavedb
+                - name: dbus
+                  mountPath: /host/var/lib/dbus
+                - name: machine-id
+                  mountPath: /host/etc/machine-id
+                  readOnly: true
+                - name: xtables-lock
+                  mountPath: /run/xtables.lock
+            - name: weave-npc
+              env:
+                - name: HOSTNAME
+                  valueFrom:
+                    fieldRef:
+                      apiVersion: v1
+                      fieldPath: spec.nodeName
+              image: 'docker.io/weaveworks/weave-npc:2.8.1'
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 100Mi
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - name: xtables-lock
+                  mountPath: /run/xtables.lock
+          dnsPolicy: ClusterFirstWithHostNet
+          hostNetwork: true
+          initContainers:
+            - name: weave-init
+              command:
+                - /home/weave/init.sh
+              image: 'docker.io/weaveworks/weave-kube:2.8.1'
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - name: cni-bin
+                  mountPath: /host/opt
+                - name: cni-bin2
+                  mountPath: /host/home
+                - name: cni-conf
+                  mountPath: /host/etc
+                - name: lib-modules
+                  mountPath: /lib/modules
+                - name: xtables-lock
+                  mountPath: /run/xtables.lock
+          priorityClassName: system-node-critical
+          restartPolicy: Always
+          securityContext:
+            seLinuxOptions: {}
+          serviceAccountName: weave-net
+          tolerations:
+            - effect: NoSchedule
+              operator: Exists
+            - effect: NoExecute
+              operator: Exists
+          volumes:
+            - name: weavedb
+              hostPath:
+                path: /var/lib/weave
+            - name: cni-bin
+              hostPath:
+                path: /opt
+            - name: cni-bin2
+              hostPath:
+                path: /home
+            - name: cni-conf
+              hostPath:
+                path: /etc
+            - name: dbus
+              hostPath:
+                path: /var/lib/dbus
+            - name: lib-modules
+              hostPath:
+                path: /lib/modules
+            - name: machine-id
+              hostPath:
+                path: /etc/machine-id
+                type: FileOrCreate
+            - name: xtables-lock
+              hostPath:
+                path: /run/xtables.lock
+                type: FileOrCreate
+      updateStrategy:
+        type: RollingUpdate
+ubuntu@ip-172-31-9-232:~$ kubectl apply -f weave.yaml
+serviceaccount/weave-net configured
+clusterrole.rbac.authorization.k8s.io/weave-net configured
+clusterrolebinding.rbac.authorization.k8s.io/weave-net configured
+role.rbac.authorization.k8s.io/weave-net configured
+rolebinding.rbac.authorization.k8s.io/weave-net configured
+daemonset.apps/weave-net created
+ubuntu@ip-172-31-9-232:~$ kubectl get pods --all-namespaces
+NAMESPACE     NAME                                      READY   STATUS    RESTARTS   AGE
+kube-system   coredns-558bd4d5db-7d9px                  1/1     Running   0          92m
+kube-system   coredns-558bd4d5db-jpgpl                  1/1     Running   0          92m
+kube-system   etcd-ip-172-31-9-232                      1/1     Running   0          93m
+kube-system   kube-apiserver-ip-172-31-9-232            1/1     Running   0          93m
+kube-system   kube-controller-manager-ip-172-31-9-232   1/1     Running   0          93m
+kube-system   kube-proxy-68c7c                          1/1     Running   0          81m
+kube-system   kube-proxy-rvqzv                          1/1     Running   0          93m
+kube-system   kube-scheduler-ip-172-31-9-232            1/1     Running   0          93m
+kube-system   weave-net-rz87k                           2/2     Running   1          4m31s
+kube-system   weave-net-t85vd                           2/2     Running   1          4m31s
+ubuntu@ip-172-31-9-232:~$
+
+
+Step 7:
+=======
+Deploying The Weaveworks Microservices Sock Shop(Master):
+ubuntu@ip-172-31-9-232:~$ kubectl get nodes
+NAME               STATUS   ROLES                  AGE   VERSION
+ip-172-31-14-191   Ready    <none>                 85m   v1.21.2
+ip-172-31-9-232    Ready    control-plane,master   97m   v1.21.2
+ubuntu@ip-172-31-9-232:~$
+
+-> Clone the microservices sock shop git repo:
+ubuntu@ip-172-31-9-232:~$ git clone https://github.com/microservices-demo/microservices-demo.git
+Cloning into 'microservices-demo'...
+remote: Enumerating objects: 10178, done.
+remote: Counting objects: 100% (457/457), done.
+remote: Compressing objects: 100% (182/182), done.
+remote: Total 10178 (delta 318), reused 350 (delta 264), pack-reused 9721
+Receiving objects: 100% (10178/10178), 52.94 MiB | 21.38 MiB/s, done.
+Resolving deltas: 100% (6185/6185), done.
+ubuntu@ip-172-31-9-232:~$
+
+-> Go to the microservices-demo/deploy/kubernetes
+ubuntu@ip-172-31-9-232:~$ kubectl create namespace sock-shop
+namespace/sock-shop created
+ubuntu@ip-172-31-9-232:~$
+
+-> Next apply the demo to your kubernetes cluster:
+ubuntu@ip-172-31-9-232:~/microservices-demo/deploy/kubernetes$ kubectl apply -f complete-demo.yaml
+Warning: resource namespaces/sock-shop is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
+namespace/sock-shop configured
+deployment.apps/carts created
+service/carts created
+deployment.apps/carts-db created
+service/carts-db created
+deployment.apps/catalogue created
+service/catalogue created
+deployment.apps/catalogue-db created
+service/catalogue-db created
+deployment.apps/front-end created
+service/front-end created
+deployment.apps/orders created
+service/orders created
+deployment.apps/orders-db created
+service/orders-db created
+deployment.apps/payment created
+service/payment created
+deployment.apps/queue-master created
+service/queue-master created
+deployment.apps/rabbitmq created
+service/rabbitmq created
+deployment.apps/session-db created
+service/session-db created
+deployment.apps/shipping created
+service/shipping created
+deployment.apps/user created
+service/user created
+deployment.apps/user-db created
+service/user-db created
+ubuntu@ip-172-31-9-232:~/microservices-demo/deploy/kubernetes$
+
+-> Check to see if all of your pods are running:
+ubuntu@ip-172-31-9-232:~/microservices-demo/deploy/kubernetes$ kubectl get pods --namespace sock-shop
+NAME                            READY   STATUS    RESTARTS   AGE
+carts-b4d4ffb5c-t8t6h           1/1     Running   0          10m
+carts-db-6c6c68b747-bdxcr       1/1     Running   0          10m
+catalogue-759cc6b86-4ghd4       1/1     Running   0          10m
+catalogue-db-96f6f6b4c-6jl8s    1/1     Running   0          10m
+front-end-5c89db9f57-9b8zg      1/1     Running   0          10m
+orders-7664c64d75-7kmdq         1/1     Running   0          10m
+orders-db-659949975f-4vtmx      1/1     Running   0          10m
+payment-7bcdbf45c9-dmntr        1/1     Running   0          10m
+queue-master-5f6d6d4796-5gzbj   1/1     Running   0          10m
+rabbitmq-5bcbb547d7-m2nbg       2/2     Running   0          10m
+session-db-7cf97f8d4f-96rtq     1/1     Running   0          10m
+shipping-7f7999ffb7-7f4zt       1/1     Running   0          10m
+user-68df64db9c-dffr2           1/1     Running   0          10m
+user-db-6df7444fc-f25h8         1/1     Running   0          10m
+ubuntu@ip-172-31-9-232:~/microservices-demo/deploy/kubernetes$
+
+
+Visit http://34.221.29.222:30001/ to see the Sock Shop working:
+
