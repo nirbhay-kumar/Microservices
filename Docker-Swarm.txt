@@ -1,0 +1,179 @@
++=================================+
+|Configure Docker Swarm in AWS EC2|
++=================================+
+
+1. Created 3 EC2 instance with User Data:
+
+User Data:
+==========
+#!/bin/bash
+sudo su
+yum update -y
+yum install httpd -y
+service httpd start
+yum install docker -y
+service docker start
+chkconfig httpd on
+cd /var/www/html
+echo "<html><h1>Hello CG $(hostname -f), welcome to my webpage.</h1></html>" > index.html
+
+2. EC2 instance created as:
+Docker Manager	:	3.95.185.41	(172.31.86.69)
+Node-1		:	35.171.8.1	(172.31.87.45)
+Node-2		:	34.239.101.123	(172.31.86.28)
+
+3. Create Docker Swarn Manager:
+[root@ip-172-31-86-69 ec2-user]# docker swarm init --advertise-addr 3.95.185.41
+Swarm initialized: current node (yokfol2d1hl25z5x48zujewp7) is now a manager.
+To add a worker to this swarm, run the following command:
+    docker swarm join --token SWMTKN-1-2vdfj7edqjzw7aoek8e7d5l7caqjg7ts0nep4do9opz25x9338-4sgx96c3fmlt56cst3g4bsn0i 3.95.185.41:2377
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+[root@ip-172-31-86-69 ec2-user]# docker node ls
+ID                            HOSTNAME                       STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+yokfol2d1hl25z5x48zujewp7 *   ip-172-31-86-69.ec2.internal   Ready     Active         Leader           20.10.4
+[root@ip-172-31-86-69 ec2-user]#
+
+4. Update EC2 Inbound rule of Security-Group of Manager. Add worker node in cluster:
+Type		Protocol	Port range	Source		Description - optional
+Custom TCP	TCP		2377		0.0.0.0/0	-
+
+[root@ip-172-31-87-45 ec2-user]# docker swarm join --token SWMTKN-1-2vdfj7edqjzw7aoek8e7d5l7caqjg7ts0nep4do9opz25x9338-4sgx96c3fmlt56cst3g4bsn0i 3.95.185.41:2377
+This node joined a swarm as a worker.
+[root@ip-172-31-86-28 ec2-user]# docker swarm join --token SWMTKN-1-2vdfj7edqjzw7aoek8e7d5l7caqjg7ts0nep4do9opz25x9338-4sgx96c3fmlt56cst3g4bsn0i 3.95.185.41:2377
+This node joined a swarm as a worker.
+
+5. See all node info hare:
+[root@ip-172-31-86-69 ec2-user]# docker node ls
+ID                            HOSTNAME                       STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+leyla5m646c31xbqt34n828f7     ip-172-31-86-28.ec2.internal   Ready     Active                          20.10.4
+yokfol2d1hl25z5x48zujewp7 *   ip-172-31-86-69.ec2.internal   Ready     Active         Leader           20.10.4
+m8s543sw5my40km7i9ppifnoo     ip-172-31-87-45.ec2.internal   Ready     Active                          20.10.4
+[root@ip-172-31-86-69 ec2-user]#
+
+6. See $docker info command:
+To add a worker to this swarm, run 'docker swarm join-token worker' and follow the instructions.
+
+7. Run service with replicas:
+[root@ip-172-31-86-69 ec2-user]# docker service create --name helloservice --replicas 3 --publish 80:80 httpd
+nxn9t2l6nrfw5pow56bgyz2je
+overall progress: 3 out of 3 tasks
+1/3: running   [==================================================>]
+2/3: running   [==================================================>]
+3/3: running   [==================================================>]
+verify: Service converged
+
+[root@ip-172-31-86-69 ec2-user]# docker service ps helloservice
+ID             NAME             IMAGE          NODE                           DESIRED STATE   CURRENT STATE                ERROR     PORTS
+lcvh54lv2k4p   helloservice.1   httpd:latest   ip-172-31-87-45.ec2.internal   Running         Running about a minute ago
+koljqaokmbxw   helloservice.2   httpd:latest   ip-172-31-86-28.ec2.internal   Running         Running about a minute ago
+2x6hb7808e9c   helloservice.3   httpd:latest   ip-172-31-86-69.ec2.internal   Running         Running about a minute ago
+[root@ip-172-31-86-69 ec2-user]#
+
+8. Run $docker ps on all 3 node:
+[root@ip-172-31-86-69 ec2-user]# docker ps
+CONTAINER ID   IMAGE          COMMAND              CREATED         STATUS         PORTS     NAMES
+c958c97a71cf   httpd:latest   "httpd-foreground"   5 minutes ago   Up 5 minutes   80/tcp    helloservice.3.2x6hb7808e9cwwn8zi0sc7sub
+[root@ip-172-31-86-69 ec2-user]# 
+[root@ip-172-31-87-45 ec2-user]# docker ps
+CONTAINER ID   IMAGE          COMMAND              CREATED         STATUS         PORTS     NAMES
+7cf17f7544c3   httpd:latest   "httpd-foreground"   6 minutes ago   Up 6 minutes   80/tcp    helloservice.1.lcvh54lv2k4pjivnf6r2y2ap7
+[root@ip-172-31-87-45 ec2-user]#
+[root@ip-172-31-86-28 ec2-user]# docker ps
+CONTAINER ID   IMAGE          COMMAND              CREATED         STATUS         PORTS     NAMES
+4b10fae40498   httpd:latest   "httpd-foreground"   7 minutes ago   Up 7 minutes   80/tcp    helloservice.2.koljqaokmbxwfsf831x040ur0
+[root@ip-172-31-86-28 ec2-user]#
+
+9. Remove one service and docker swarm create new service:
+[root@ip-172-31-86-69 ec2-user]# docker rm -f helloservice.3.2x6hb7808e9cwwn8zi0sc7sub
+helloservice.3.2x6hb7808e9cwwn8zi0sc7sub
+[root@ip-172-31-86-69 ec2-user]# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+[root@ip-172-31-86-69 ec2-user]# docker ps
+CONTAINER ID   IMAGE          COMMAND              CREATED         STATUS                  PORTS     NAMES
+ac8f7219ec5d   httpd:latest   "httpd-foreground"   7 seconds ago   Up Less than a second   80/tcp    helloservice.3.2nkr7cjf5piftcvx3z95f3de9
+[root@ip-172-31-86-69 ec2-user]#
+
+10. See more about service:
+[root@ip-172-31-86-69 ec2-user]# docker service inspect --pretty helloservice
+
+ID:             nxn9t2l6nrfw5pow56bgyz2je
+Name:           helloservice
+Service Mode:   Replicated
+ Replicas:      3
+Placement:
+UpdateConfig:
+ Parallelism:   1
+ On failure:    pause
+ Monitoring Period: 5s
+ Max failure ratio: 0
+ Update order:      stop-first
+RollbackConfig:
+ Parallelism:   1
+ On failure:    pause
+ Monitoring Period: 5s
+ Max failure ratio: 0
+ Rollback order:    stop-first
+ContainerSpec:
+ Image:         httpd:latest@sha256:317cc1a2ded5e96225e4181323737f6d29b4fda58a6cc840a5752af6493a231f
+ Init:          false
+Resources:
+Endpoint Mode:  vip
+Ports:
+ PublishedPort = 80
+  Protocol = tcp
+  TargetPort = 80
+  PublishMode = ingress
+[root@ip-172-31-86-69 ec2-user]#
+
+11. Remove service:
+[root@ip-172-31-86-69 ec2-user]# docker service rm helloservice
+helloservice
+[root@ip-172-31-86-69 ec2-user]# docker service ls
+ID        NAME      MODE      REPLICAS   IMAGE     PORTS
+[root@ip-172-31-86-69 ec2-user]#
+
+12. Docker stack:
+[root@ip-172-31-86-69 ec2-user]# cat dstackservice.yml
+version: "3.9"
+services:
+  web:
+    image: "httpd:latest"
+    build: .
+    ports:
+      - "8000:8000"
+  database:
+    image: "mysql"
+[root@ip-172-31-86-69 ec2-user]# docker stack deploy -c dstackservice.yml dockerstack
+Ignoring unsupported options: build
+
+Creating network dockerstack_default
+Creating service dockerstack_web
+Creating service dockerstack_database
+[root@ip-172-31-86-69 ec2-user]# docker service ls
+ID             NAME                   MODE         REPLICAS   IMAGE          PORTS
+6spf161jsoqd   dockerstack_database   replicated   0/1        mysql:latest
+lwen0vayur46   dockerstack_web        replicated   1/1        httpd:latest   *:8000->8000/tcp
+[root@ip-172-31-86-69 ec2-user]#
+
+13. Not want to run service on Manager node:
+[root@ip-172-31-86-69 ec2-user]# docker node ls
+ID                            HOSTNAME                       STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+leyla5m646c31xbqt34n828f7     ip-172-31-86-28.ec2.internal   Ready     Active                          20.10.4
+yokfol2d1hl25z5x48zujewp7 *   ip-172-31-86-69.ec2.internal   Ready     Active         Leader           20.10.4
+m8s543sw5my40km7i9ppifnoo     ip-172-31-87-45.ec2.internal   Ready     Active                          20.10.4
+[root@ip-172-31-86-69 ec2-user]# docker node update --availability drain yokfol2d1hl25z5x48zujewp7
+yokfol2d1hl25z5x48zujewp7
+[root@ip-172-31-86-69 ec2-user]# docker node ls
+ID                            HOSTNAME                       STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+leyla5m646c31xbqt34n828f7     ip-172-31-86-28.ec2.internal   Ready     Active                          20.10.4
+yokfol2d1hl25z5x48zujewp7 *   ip-172-31-86-69.ec2.internal   Ready     Drain          Leader           20.10.4
+m8s543sw5my40km7i9ppifnoo     ip-172-31-87-45.ec2.internal   Ready     Active                          20.10.4
+[root@ip-172-31-86-69 ec2-user]# docker node update --availability active yokfol2d1hl25z5x48zujewp7
+yokfol2d1hl25z5x48zujewp7
+[root@ip-172-31-86-69 ec2-user]# docker node ls
+ID                            HOSTNAME                       STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+leyla5m646c31xbqt34n828f7     ip-172-31-86-28.ec2.internal   Ready     Active                          20.10.4
+yokfol2d1hl25z5x48zujewp7 *   ip-172-31-86-69.ec2.internal   Ready     Active         Leader           20.10.4
+m8s543sw5my40km7i9ppifnoo     ip-172-31-87-45.ec2.internal   Ready     Active                          20.10.4
+[root@ip-172-31-86-69 ec2-user]#
