@@ -90,3 +90,6 @@
 
 		docker push nirbhay99/coupon_app
 		docker push nirbhay99/product_app
+		
+		docker pull nirbhay99/coupon_app
+		docker pull nirbhay99/product_app
