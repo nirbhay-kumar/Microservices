@@ -81,3 +81,12 @@
 		curl -d '{"code":"SUPERSALE","discount":"100","expDate":"10/10/2022"}' -H "Content-Type: application/json" -X POST http://18.118.169.12:10555/couponapi/coupons
 		curl -H "Content-Type: application/json" -X GET http://18.118.169.12:10555/couponapi/coupons/SUPERSALE
 		curl -d '{"name":"MAC","description":"Its Cool","price":2000,"couponCode":"SUPERSALE"}' -H "Content-Type: application/json" -X POST http://18.118.169.12:10666/productapi/products
+
+#### Docker-Hub
+docker login
+
+docker build -t nirbhay99/coupon_app .
+docker build -t nirbhay99/product_app .
+
+docker push nirbhay99/coupon_app
+docker push nirbhay99/product_app
