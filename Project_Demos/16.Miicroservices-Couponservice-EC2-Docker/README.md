@@ -83,10 +83,10 @@
 		curl -d '{"name":"MAC","description":"Its Cool","price":2000,"couponCode":"SUPERSALE"}' -H "Content-Type: application/json" -X POST http://18.118.169.12:10666/productapi/products
 
 #### Docker-Hub
-docker login
+		docker login
 
-docker build -t nirbhay99/coupon_app .
-docker build -t nirbhay99/product_app .
+		docker build -t nirbhay99/coupon_app .
+		docker build -t nirbhay99/product_app .
 
-docker push nirbhay99/coupon_app
-docker push nirbhay99/product_app
+		docker push nirbhay99/coupon_app
+		docker push nirbhay99/product_app
